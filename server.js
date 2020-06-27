@@ -5,8 +5,8 @@ let sanitizeHTML = require('sanitize-html');
 let app = express();
 let db;
 
-let port = process.env.PORT
-if (port == null || port == "") {
+let port = process.env.PORT;
+if (port == null || port === "") {
     port = 3000
 }
 
@@ -29,7 +29,7 @@ app.use(express.urlencoded({
 
 function passwordProtected(request, responce, next) {
     responce.set('WWW-Authenticate', 'Basic realm="Simple Todo App"');
-    console.log(request.headers.authorization);
+    // console.log(request.headers.authorization);
     if (request.headers.authorization == "Basic YWRtaW46YWRtaW4=") {
         next();
     } else {
@@ -62,14 +62,12 @@ app.get('/', function (request, responce) {
                             </form>
                         </div>
                         
-                        <ul id="item-list" class="list-group pb-5">
-                            
-                        </ul>
+                        <ul id="item-list" class="list-group pb-5"></ul>
                         
                     </div>
 
                     <script>
-                        let items = ${JSON.stringify(items)}
+                        let items = ${JSON.stringify(items)};
                     </script>    
 
                     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -80,27 +78,21 @@ app.get('/', function (request, responce) {
 });
 
 app.post('/create-item', function (request, responce) {
-    let safeText = sanitizeHTML(request.body.text, {
-        allowedTags: [],
-        alloweAttributes: []
-    });
+    let safeText = sanitizeHTML(request.body.text, {allowedTags: [], allowedAttributes: {}});
     db.collection('items').insertOne({
-        safeText: request.body.text
+        text: safeText
     }, function (err, info) {
         responce.json(info.ops[0]);
     });
 });
 
 app.post('/update-item', function (request, responce) {
-    let safeText = sanitizeHTML(request.body.text, {
-        allowedTags: [],
-        alloweAttributes: []
-    });
+    let safeText = sanitizeHTML(request.body.text, {allowedTags: [], allowedAttributes: {}});
     db.collection('items').findOneAndUpdate({
         _id: new mongodb.ObjectId(request.body.id)
     }, {
         $set: {
-            safeText: request.body.text
+            text: safeText
         }
     }, function () {
         responce.send("Success");

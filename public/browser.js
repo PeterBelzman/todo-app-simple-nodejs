@@ -1,5 +1,3 @@
-let createField = document.getElementById("create-field");
-
 function itemTemplate(item) {
     return `
     <li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
@@ -20,6 +18,8 @@ let ourHTML = items.map(function (item) {
 document.getElementById("item-list").insertAdjacentHTML("beforeend", ourHTML);
 
 // Create Feature
+let createField = document.getElementById("create-field");
+
 document.getElementById("create-form").addEventListener("submit", function (e) {
     e.preventDefault();
     axios.post('/create-item', {
